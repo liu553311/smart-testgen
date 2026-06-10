@@ -17,9 +17,10 @@ class OpenAIProvider(LLMProvider):
         api_key: str,
         model: str = "gpt-4o",
         max_tokens: int = 4096,
+        base_url: str | None = None,
     ):
         super().__init__(api_key, model, max_tokens)
-        self.client = openai.OpenAI(api_key=api_key)
+        self.client = openai.OpenAI(api_key=api_key, base_url=base_url)
 
     @classmethod
     def default_model(cls) -> str:

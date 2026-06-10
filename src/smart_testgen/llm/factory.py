@@ -31,6 +31,7 @@ class LLMProviderFactory:
         api_key: str,
         model: str | None = None,
         max_tokens: int = 4096,
+        base_url: str | None = None,
     ) -> LLMProvider:
         """Create an LLM provider instance.
 
@@ -39,6 +40,7 @@ class LLMProviderFactory:
             api_key: API key for the provider.
             model: Model identifier. Uses provider default if None.
             max_tokens: Maximum tokens for generation.
+            base_url: Custom API base URL for third-party providers.
 
         Returns:
             Configured LLMProvider instance.
@@ -56,7 +58,18 @@ class LLMProviderFactory:
 
         cls = _REGISTRY[provider_lower]
         resolved_model = model or cls.default_model()
-        return cls(api_key=api_key, model=resolved_model, max_tokens=max_tokens)
+
+        import inspect
+        sig = inspect.signature(cls.__init__)
+        kwargs: dict = {
+            "api_key": api_key,
+            "model": resolved_model,
+            "max_tokens": max_tokens,
+        }
+        if "base_url" in sig.parameters and base_url:
+            kwargs["base_url"] = base_url
+
+        return cls(**kwargs)
 
     @staticmethod
     def available_providers() -> list[str]:

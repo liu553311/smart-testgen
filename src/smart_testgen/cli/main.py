@@ -119,11 +119,13 @@ def generate(
 
     # Generate
     try:
+        base_url = settings.get_base_url(resolved_provider)
         provider_instance = LLMProviderFactory.create(
             provider=resolved_provider,
             api_key=api_key,
             model=resolved_model,
             max_tokens=settings.max_tokens,
+            base_url=base_url,
         )
         generator = TestGenerator(provider_instance)
 

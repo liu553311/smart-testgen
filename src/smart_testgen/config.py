@@ -16,6 +16,8 @@ class Settings(BaseModel):
     llm_provider: str = "openai"
     anthropic_api_key: str = ""
     openai_api_key: str = ""
+    openai_base_url: str = ""
+    anthropic_base_url: str = ""
     anthropic_model: str = "claude-sonnet-4-20250514"
     openai_model: str = "gpt-4o"
     max_tokens: int = 4096
@@ -49,6 +51,8 @@ class Settings(BaseModel):
             llm_provider=provider,
             anthropic_api_key=env("ANTHROPIC_API_KEY"),
             openai_api_key=env("OPENAI_API_KEY"),
+            openai_base_url=env("OPENAI_BASE_URL", ""),
+            anthropic_base_url=env("ANTHROPIC_BASE_URL", ""),
             anthropic_model=env("ANTHROPIC_MODEL", "claude-sonnet-4-20250514"),
             openai_model=env("OPENAI_MODEL", "gpt-4o"),
             max_tokens=int(env("MAX_TOKENS", "4096")),
@@ -88,3 +92,14 @@ class Settings(BaseModel):
         elif prov == "openai":
             return self.openai_model
         raise ValueError(f"Unknown provider: {prov}")
+
+    def get_base_url(self, provider: str | None = None) -> str | None:
+        """Get the custom base URL for the specified (or default) provider."""
+        prov = (provider or self.llm_provider).lower()
+        if prov == "anthropic":
+            url = self.anthropic_base_url
+        elif prov == "openai":
+            url = self.openai_base_url
+        else:
+            return None
+        return url or None
