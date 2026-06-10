@@ -1,0 +1,10 @@
+The system shall allow users to reset their forgotten password via email.
+
+Requirements:
+1. User enters their registered email address on the forgot password page
+2. System sends a password reset link valid for 1 hour
+3. The reset link contains a unique token
+4. User clicks the link and enters a new password
+5. New password must meet complexity requirements (8+ chars, uppercase, lowercase, digit)
+6. Old password is invalidated after reset
+7. User receives confirmation email after successful reset
